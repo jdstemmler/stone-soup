@@ -89,7 +89,7 @@ def insert_into_mongo(table, rows):
         except DuplicateKeyError:
             continue
 
-def main():
+def main(start_date):
     client = MongoClient()
     db = client['capstone-database']
     tab = db['recipe-metadata']
@@ -97,7 +97,7 @@ def main():
     settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings.json')
     nyt_api_key = load_setting(settings_file, 'NYT_API_KEY')
 
-    paginate_by_date(nyt_api_key, tab, window=90)
+    paginate_by_date(nyt_api_key, tab, start_date=start_date, window=90)
 
     client.close()
     # url, params = format_api_url(nyt_api_key)
@@ -106,4 +106,8 @@ def main():
     # insert_into_mongo(tab, docs)
 
 if __name__ == "__main__":
-    main()
+    start_date = '20151201'
+    if len(sys.argv) > 1:
+        start_date = sys.argv[-1]
+
+    main(start_date=start_date)
