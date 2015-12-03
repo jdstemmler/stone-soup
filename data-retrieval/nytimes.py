@@ -98,7 +98,7 @@ def main(start_date):
     settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings.json')
     nyt_api_key = load_setting(settings_file, 'NYT_API_KEY')
 
-    paginate_by_date(nyt_api_key, tab, start_date=start_date, window=90)
+    paginate_by_date(nyt_api_key, tab, start_date=start_date, window=365)
 
     client.close()
     # url, params = format_api_url(nyt_api_key)
