@@ -66,7 +66,7 @@ def paginate(key, tab, sleep=5, **kwargs):
     print("Inserted {} new metadata rows".format(final_tab_len - prior_tab_len))
     print("Current Table Size: {} entries".format(final_tab_len))
 
-def paginate_by_date(key, tab, start_date='20101210', window=0):
+def paginate_by_date(key, tab, start_date='20091210', window=0):
     endd = datetime.datetime.strptime(start_date, '%Y%m%d')
 
     for i in range(20):
