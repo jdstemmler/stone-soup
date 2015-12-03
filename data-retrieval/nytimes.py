@@ -6,6 +6,7 @@ from pymongo.errors import DuplicateKeyError
 import datetime
 import requests
 import time
+import sys
 
 from gtools.settings import load_setting
 from gtools.parsers import NYTimesCooking
