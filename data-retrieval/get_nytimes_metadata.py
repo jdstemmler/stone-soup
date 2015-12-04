@@ -90,6 +90,9 @@ def insert_into_mongo(table, rows):
         except DuplicateKeyError:
             continue
 
+def extract_urls_from_mongo():
+    pass
+
 def main(start_date):
     client = MongoClient()
     db = client['capstone-database']
@@ -101,10 +104,6 @@ def main(start_date):
     paginate_by_date(nyt_api_key, tab, start_date=start_date, window=365)
 
     client.close()
-    # url, params = format_api_url(nyt_api_key)
-    # response = query_api(url, params)
-    # docs = parse_api_response(response)
-    # insert_into_mongo(tab, docs)
 
 if __name__ == "__main__":
     start_date = '20151201'
