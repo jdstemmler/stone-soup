@@ -9,8 +9,8 @@ from pymongo import MongoClient
 def get_recipes(urls, tab):
     for url in urls:
         print('getting {}'.format(url))
-        if not len(tab.find({'web_url': url})):
-            print('url not in database. scraping.')
+        if not tab.find({'web_url': url}).count():
+            print('url not in database. fetching.')
             html = requests.get(url)
             if html.status_code != 200:
                 print('WARNING! {}'.format(html.status_code))
