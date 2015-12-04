@@ -7,11 +7,12 @@ from pymongo import MongoClient
 
 
 def get_recipes(urls, tab):
-    for url in urls:
+    n_urls = len(urls)
+    for i, url in enumerate(urls):
         url = url.strip()
         print('getting {}'.format(url))
         if not tab.find({'web_url': url}).count():
-            print('url not in database. fetching.\n')
+            print('url not in database. fetching.')
             html = requests.get(url)
             if html.status_code != 200:
                 print('WARNING! {}'.format(html.status_code))
@@ -22,7 +23,9 @@ def get_recipes(urls, tab):
             time.sleep(5)
 
         elif tab.find({'web_url': url}).count():
-            print('already have recipe\n')
+            print('already have recipe')
+
+        print("Processed {} out of {} recipes".format(i, n_urls))
 
 
 if __name__ == "__main__":
