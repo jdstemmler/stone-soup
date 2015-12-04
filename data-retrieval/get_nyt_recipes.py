@@ -8,15 +8,18 @@ from pymongo import MongoClient
 
 def get_recipes(urls, tab):
     for url in urls:
+        url = url.strip()
         print('getting {}'.format(url))
         if not tab.find({'web_url': url}).count():
-            print('url not in database. fetching.')
+            print('url not in database. fetching.\n')
             html = requests.get(url)
             if html.status_code != 200:
                 print('WARNING! {}'.format(html.status_code))
-                tab.insert_one({'web_url': url, 'content': 'None'})
+                #tab.insert_one({'web_url': url, 'content': 'None'})
             elif html.status_code == 200:
                 tab.insert_one({'web_url': url, 'content': html.content})
+        elif tab.find({'web_url': url}).count():
+            print('already have recipe\n')
         time.sleep(5)
 
 
