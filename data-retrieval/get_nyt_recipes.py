@@ -18,9 +18,11 @@ def get_recipes(urls, tab):
                 #tab.insert_one({'web_url': url, 'content': 'None'})
             elif html.status_code == 200:
                 tab.insert_one({'web_url': url, 'content': html.content})
+
+            time.sleep(5)
+
         elif tab.find({'web_url': url}).count():
             print('already have recipe\n')
-        time.sleep(5)
 
 
 if __name__ == "__main__":
