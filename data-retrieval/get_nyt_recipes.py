@@ -26,7 +26,7 @@ def get_recipes(urls, tab):
         elif tab.find({'web_url': url}).count():
             print('already have recipe')
 
-        print("Processed {} out of {} recipes\n".format(i, n_urls))
+        print("Processed {} out of {} recipes\n".format(i+1, n_urls))
 
         if i % 100 == 0:
             print("Taking a break...\n")
