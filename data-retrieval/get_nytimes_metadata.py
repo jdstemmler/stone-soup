@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 
+import datetime
 import os
+import sys
+import time
+
+import requests
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
-import datetime
-import requests
-import time
-import sys
 
 from gtools.settings import load_setting
-from gtools.parsers import NYTimesCooking
+
+
+# from gtools.parsers import NYTimesCooking
+
 
 def format_api_url(api_key):
     params = {}
@@ -22,6 +26,7 @@ def format_api_url(api_key):
               'page': 0}
     return url, params
 
+
 def query_api(url, params):
     response = requests.get(url, params=params)
     if response.status_code != 200:
@@ -29,6 +34,7 @@ def query_api(url, params):
         return response
     else:
         return response
+
 
 def parse_api_response(response):
     json = getattr(response, 'json')
@@ -39,6 +45,7 @@ def parse_api_response(response):
         return None
     return docs
 
+
 def get_single_query(key, tab, page=0):
     url, params = format_api_url(key)
     params['page'] = page
@@ -47,6 +54,7 @@ def get_single_query(key, tab, page=0):
     docs = parse_api_response(response)
     insert_into_mongo(tab, docs)
     return docs
+
 
 def paginate(key, tab, sleep=5, **kwargs):
     prior_tab_len = tab.find().count()
@@ -67,6 +75,7 @@ def paginate(key, tab, sleep=5, **kwargs):
     print("Inserted {} new metadata rows".format(final_tab_len - prior_tab_len))
     print("Current Table Size: {} entries".format(final_tab_len))
 
+
 def paginate_by_date(key, tab, start_date='20080910', window=0):
     endd = datetime.datetime.strptime(start_date, '%Y%m%d')
 
@@ -83,6 +92,7 @@ def paginate_by_date(key, tab, start_date='20080910', window=0):
 
         time.sleep(30)
 
+
 def insert_into_mongo(table, rows):
     for row in rows:
         try:
@@ -90,8 +100,10 @@ def insert_into_mongo(table, rows):
         except DuplicateKeyError:
             continue
 
+
 def extract_urls_from_mongo():
     pass
+
 
 def main(start_date):
     client = MongoClient()
@@ -104,6 +116,7 @@ def main(start_date):
     paginate_by_date(nyt_api_key, tab, start_date=start_date, window=365)
 
     client.close()
+
 
 if __name__ == "__main__":
     start_date = '20151201'
