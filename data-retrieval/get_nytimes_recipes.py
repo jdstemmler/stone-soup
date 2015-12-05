@@ -6,6 +6,8 @@ import numpy as np
 import requests
 from pymongo import MongoClient
 
+from gtools.settings import load_setting
+
 
 def get_single_recipe(url, verbose=True):
     """Get a single recipe from a URL"""
@@ -62,9 +64,13 @@ if __name__ == "__main__":
     with open(url_file, 'r') as f:
         urls = [line for line in f]
 
+    # set the location of the settings file
+    settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings.json')
+    database = load_setting(settings_file, 'db_name')  # name of mongodb database
+
     # connect to the client and database/collection
     client = MongoClient()
-    db = client['capstone-project']
+    db = client[database]
     tab = db['nyt_recipes']
 
     # get all the recipes from the url list

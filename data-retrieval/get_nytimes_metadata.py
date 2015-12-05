@@ -186,7 +186,7 @@ def main(start_date):
     # open the connection to the database, get the table
     client = MongoClient()
     db = client[database]
-    table = db['recipe-metadata']
+    table = db['nyt-recipe-metadata']
 
     # paginate through the search results
     # starting at the start date specified at runtime and a 2000 day initial window
