@@ -111,6 +111,7 @@ def paginate_by_date(key, tab, start_date='19000101', init_window=0):
         print("New Start Date: {}".format(start))
         print("Window: {} Days".format(window.days))
         time.sleep(30)
+    print("Complete")
 
     # for i in range(20):
     #     startd = endd - datetime.timedelta(days=window)
@@ -135,12 +136,15 @@ def insert_into_mongo(table, rows):
 
 
 def main(start_date):
-    client = MongoClient()
-    db = client['capstone-database']
-    table = db['recipe-metadata']
 
     settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings.json')
+
+    database = load_setting(settings_file, 'db_name')
     nyt_api_key = load_setting(settings_file, 'NYT_API_KEY')
+
+    client = MongoClient()
+    db = client[database]
+    table = db['recipe-metadata']
 
     paginate_by_date(nyt_api_key, table, start_date=start_date, init_window=1000)
 
