@@ -12,9 +12,6 @@ from pymongo.errors import DuplicateKeyError
 from gtools.settings import load_setting
 
 
-# from gtools.parsers import NYTimesCooking
-
-
 def format_api_url(api_key):
     params = {}
     url = 'http://api.nytimes.com/svc/search/v2/articlesearch.json'
