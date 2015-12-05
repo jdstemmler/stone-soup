@@ -59,15 +59,17 @@ def get_recipes_from_list(urls, tab, verbose=False):
 
 if __name__ == "__main__":
 
-    # get a list of the urls to work on
+    # set the location of the settings file
     cap_dir = os.getenv("CAPSTONE_DIR")
-    url_file = os.path.join(cap_dir, 'data', 'nyt_urls.txt')
+    settings_file = os.path.join(cap_dir, 'settings', 'project_settings.json')
+    database = load_setting(settings_file, 'db_name')  # name of mongodb database
+    url_filename = load_setting(settings_file, 'nyt_url_file')
+
+    # get a list of the urls to work on
+
+    url_file = os.path.join(cap_dir, 'data', url_filename)
     with open(url_file, 'r') as f:
         urls = [line for line in f]
-
-    # set the location of the settings file
-    settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings', 'project_settings.json')
-    database = load_setting(settings_file, 'db_name')  # name of mongodb database
 
     # connect to the client and database/collection
     client = MongoClient()

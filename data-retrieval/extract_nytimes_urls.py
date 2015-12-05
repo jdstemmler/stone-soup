@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import sys
 from pymongo import MongoClient
 
 from gtools.settings import load_setting
@@ -28,14 +27,12 @@ def main(fileout):
 
 
 if __name__ == "__main__":
-    file_out = 'nyt_urls.txt'
-    if len(sys.argv) > 1:
-        file_out = sys.argv[0]
 
     cap_dir = os.getenv("CAPSTONE_DIR")
     if not os.path.isdir(os.path.join(cap_dir, 'data')):
         os.makedirs(os.path.join(cap_dir, 'data'))
 
+    file_out = load_setting(os.path.join(cap_dir, 'settings', 'project_settings.json'), 'nyt_url_file')
     outfile = os.path.join(cap_dir, 'data', file_out)
 
     main(outfile)
