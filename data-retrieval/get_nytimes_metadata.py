@@ -108,7 +108,9 @@ def paginate_by_date(key, tab, start_date='19000101', init_window=0):
                  begin_date=start.strftime(dfmt),
                  end_date=end.strftime(dfmt))
         start += window
+        end = start + window
         print("New Start Date: {}".format(start))
+        print("New End Date: {}".format(end))
         print("Window: {} Days".format(window.days))
         time.sleep(30)
     print("Complete")
