@@ -88,7 +88,7 @@ def paginate_by_date(key, tab, start_date='19000101', init_window=0):
     end = start + window
     print("Starting with {}".format(start))
     print("End Date: {}".format(end))
-    print("Window Size of {} Days".format(window.days))
+    print("Window Size of {} Days\n".format(window.days))
     while start <= datetime.datetime.today():
         # test the window. can get max 1000 hits
         url, params = format_api_url(key)
@@ -100,7 +100,7 @@ def paginate_by_date(key, tab, start_date='19000101', init_window=0):
             window = datetime.timedelta(days=(window / 2).days)
             print("Reducing Window to {} Days".format(window.days))
             end = start + window
-            print("New End Date: {}".format(end))
+            print("New End Date: {}\n".format(end))
             url, params = format_api_url(key)
             params.update(begin_date=start.strftime(dfmt),
                           end_date=end.strftime(dfmt))
@@ -113,7 +113,7 @@ def paginate_by_date(key, tab, start_date='19000101', init_window=0):
         end = start + window
         print("New Start Date: {}".format(start))
         print("New End Date: {}".format(end))
-        print("Window: {} Days".format(window.days))
+        print("Window: {} Days\n".format(window.days))
         time.sleep(10)
     print("Complete")
 
