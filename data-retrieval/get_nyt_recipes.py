@@ -7,29 +7,52 @@ import requests
 from pymongo import MongoClient
 
 
-def get_recipes(urls, tab):
-    n_urls = len(urls)
-    for i, url in enumerate(urls):
-        url = url.strip()
-        print('getting {}'.format(url))
-        if not tab.find({'web_url': url}).count():
-            print('url not in database. fetching.')
-            html = requests.get(url)
-            if html.status_code != 200:
-                print('WARNING! {}'.format(html.status_code))
-                # tab.insert_one({'web_url': url, 'content': 'None'})
-            elif html.status_code == 200:
-                tab.insert_one({'web_url': url, 'content': html.content})
+def get_single_recipe(url, verbose=True):
+    """Get a single recipe from a URL"""
 
+    # fetch the url
+    html = requests.get(url)
+
+    # check status code for successful result
+    if html.status_code != 200:
+        if verbose:
+            print("Warning: Status Code {}".format(html.status_code))
+        return None  # return None if result is not successful
+    elif html.status_code == 200:
+        return {'web_url': url, 'content': html.content}  # return the url and content if successful
+
+
+def get_recipes_from_list(urls, tab, verbose=False):
+    """Get all recipes from a list of URLs"""
+
+    n_urls = len(urls)  # length of the url list
+    for i, url in enumerate(urls):
+        url = url.strip()  # strip \n chars
+        if verbose: print('getting {}'.format(url))
+
+        # look for an existing entry in the database for the recipe
+        if not tab.find({'web_url': url}).count():
+            # no matches in the database, fetch the result
+            if verbose: print('url not in database. fetching.')
+
+            content = get_single_recipe(url, verbose)
+            if content is not None:
+                # insert into the db if the content is not None
+                tab.insert_one(content)
+
+            # sleep a few seconds before hitting the site again for another recipe
             time.sleep(4. * np.random.random_sample() + 3.)
 
         elif tab.find({'web_url': url}).count():
-            print('already have recipe')
+            # found a match in the database, skip it.
+            if verbose: print('already have recipe')
 
-        print("Processed {} out of {} recipes\n".format(i+1, n_urls))
+        # status message for output
+        if verbose: print("Processed {} out of {} recipes\n".format(i+1, n_urls))
 
+        # take a longer break every 100 recipes
         if i % 100 == 0:
-            print("Taking a break...\n")
+            if verbose: print("Taking a break...\n")
             time.sleep(60)
 
 if __name__ == "__main__":
@@ -39,10 +62,12 @@ if __name__ == "__main__":
     with open(url_file, 'r') as f:
         urls = [line for line in f]
 
+    # connect to the client and database/collection
     client = MongoClient()
     db = client['capstone-project']
     tab = db['nyt_recipes']
 
-    get_recipes(urls, tab)
+    # get all the recipes from the url list
+    get_recipes_from_list(urls, tab)
 
     client.close()
