@@ -10,7 +10,7 @@ from gtools.settings import load_setting
 def main(fileout):
 
     # set the location of the settings file
-    settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings.json')
+    settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings/project_settings.json')
 
     # set some settings
     database = load_setting(settings_file, 'db_name')  # name of mongodb database

@@ -177,11 +177,12 @@ def main(start_date):
     """called by the script to do the processing"""
 
     # set the location of the settings file
-    settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings.json')
+    api_settings = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings', 'api_settings.json')
+    project_settings = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings', 'project_settings.json')
 
     # set some settings
-    database = load_setting(settings_file, 'db_name')  # name of mongodb database
-    nyt_api_key = load_setting(settings_file, 'NYT_API_KEY')  #NYTimes API Key
+    database = load_setting(project_settings, 'db_name')     # name of mongodb database
+    nyt_api_key = load_setting(api_settings, 'NYT_API_KEY')  # NYTimes API Key
 
     # open the connection to the database, get the table
     client = MongoClient()

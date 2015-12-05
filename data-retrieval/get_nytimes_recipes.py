@@ -65,7 +65,7 @@ if __name__ == "__main__":
         urls = [line for line in f]
 
     # set the location of the settings file
-    settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings.json')
+    settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings', 'project_settings.json')
     database = load_setting(settings_file, 'db_name')  # name of mongodb database
 
     # connect to the client and database/collection
