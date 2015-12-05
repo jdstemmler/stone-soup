@@ -58,5 +58,5 @@ target/
 
 .idea/
 .ipynb_checkpoints/
-settings.json
+api_settings.json
 data/
