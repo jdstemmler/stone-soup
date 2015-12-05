@@ -33,6 +33,14 @@ def query_api(url, params):
         return response
 
 
+def get_number_of_results(response):
+    json = getattr(response, 'json')
+    if json() is None:
+        return None
+    n_results = json()['response']['meta']['hits']
+    return n_results
+
+
 def parse_api_response(response):
     json = getattr(response, 'json')
     if json is None:
@@ -70,24 +78,52 @@ def paginate(key, tab, sleep=5, **kwargs):
         response = query_api(url, params)
     final_tab_len = tab.find().count()
     print("Inserted {} new metadata rows".format(final_tab_len - prior_tab_len))
-    print("Current Table Size: {} entries".format(final_tab_len))
+    print("Current Table Size: {} entries\n".format(final_tab_len))
 
 
-def paginate_by_date(key, tab, start_date='20080910', window=0):
-    endd = datetime.datetime.strptime(start_date, '%Y%m%d')
+def paginate_by_date(key, tab, start_date='19000101', init_window=0):
+    window = datetime.timedelta(days=init_window)
+    dfmt = '%Y%m%d'
+    start = datetime.datetime.strptime(start_date, dfmt)
+    end = start + window
+    print("Starting with {}".format(start))
+    print("Window Size of {} Days".format(window.days))
+    while start <= datetime.datetime.today():
+        # test the window. can get max 1000 hits
+        url, params = format_api_url(key)
+        params.update(begin_date=start.strftime(dfmt),
+                      end_date=end.strftime(dfmt))
+        response = query_api(url, params)
 
-    for i in range(20):
-        startd = endd - datetime.timedelta(days=window)
+        while get_number_of_results(response) > 1000:
+            window = datetime.timedelta(days=(window / 2).days)
+            print("Reducing Window to {} Days".format(window.days))
+            end = start + window
+            url, params = format_api_url(key)
+            params.update(begin_date=start.strftime(dfmt),
+                          end_date=end.strftime(dfmt))
+            response = query_api(url, params)
 
-        st = startd.strftime('%Y%m%d')
-        en = endd.strftime('%Y%m%d')
-        print("{} to {}".format(st, en))
-
-        paginate(key, tab, begin_date=st, end_date=en)
-
-        endd -= datetime.timedelta(days=window+1)
-
+        paginate(key, tab,
+                 begin_date=start.strftime(dfmt),
+                 end_date=end.strftime(dfmt))
+        start += window
+        print("New Start Date: {}".format(start))
+        print("Window: {} Days".format(window.days))
         time.sleep(30)
+
+    # for i in range(20):
+    #     startd = endd - datetime.timedelta(days=window)
+    #
+    #     st = startd.strftime('%Y%m%d')
+    #     en = endd.strftime('%Y%m%d')
+    #     print("{} to {}".format(st, en))
+    #
+    #     paginate(key, tab, begin_date=st, end_date=en)
+    #
+    #     endd -= datetime.timedelta(days=window+1)
+    #
+    #     time.sleep(30)
 
 
 def insert_into_mongo(table, rows):
@@ -98,25 +134,22 @@ def insert_into_mongo(table, rows):
             continue
 
 
-def extract_urls_from_mongo():
-    pass
-
-
 def main(start_date):
     client = MongoClient()
     db = client['capstone-database']
-    tab = db['recipe-metadata']
+    table = db['recipe-metadata']
 
     settings_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings.json')
     nyt_api_key = load_setting(settings_file, 'NYT_API_KEY')
 
-    paginate_by_date(nyt_api_key, tab, start_date=start_date, window=365)
+    paginate_by_date(nyt_api_key, table, start_date=start_date, init_window=1000)
 
     client.close()
 
 
 if __name__ == "__main__":
-    start_date = '20151201'
+    start_date = datetime.date.today().strftime('%Y%m%d')
+
     if len(sys.argv) > 1:
         start_date = sys.argv[-1]
 
