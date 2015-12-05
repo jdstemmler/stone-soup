@@ -60,7 +60,8 @@ def get_recipes_from_list(urls, tab, verbose=False):
 if __name__ == "__main__":
 
     # get a list of the urls to work on
-    url_file = os.path.join(os.getenv("CAPSTONE_DIR"), 'data/nyt_urls.txt')
+    cap_dir = os.getenv("CAPSTONE_DIR")
+    url_file = os.path.join(cap_dir, 'data', 'nyt_urls.txt')
     with open(url_file, 'r') as f:
         urls = [line for line in f]
 

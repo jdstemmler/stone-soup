@@ -177,8 +177,9 @@ def main(start_date):
     """called by the script to do the processing"""
 
     # set the location of the settings file
-    api_settings = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings', 'api_settings.json')
-    project_settings = os.path.join(os.getenv("CAPSTONE_DIR"), 'settings', 'project_settings.json')
+    cap_dir = os.getenv("CAPSTONE_DIR")
+    api_settings = os.path.join(cap_dir, 'settings', 'api_settings.json')
+    project_settings = os.path.join(cap_dir, 'settings', 'project_settings.json')
 
     # set some settings
     database = load_setting(project_settings, 'db_name')     # name of mongodb database

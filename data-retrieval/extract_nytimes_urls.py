@@ -32,6 +32,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         file_out = sys.argv[0]
 
-    outfile = os.path.join(os.getenv("CAPSTONE_DIR"), 'data', file_out)
+    cap_dir = os.getenv("CAPSTONE_DIR")
+    if not os.path.isdir(os.path.join(cap_dir, 'data')):
+        os.makedirs(os.path.join(cap_dir, 'data'))
+
+    outfile = os.path.join(cap_dir, 'data', file_out)
 
     main(outfile)
