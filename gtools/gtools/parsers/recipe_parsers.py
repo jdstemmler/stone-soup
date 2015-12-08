@@ -155,9 +155,9 @@ class NYTimesCooking:
     def __repr__(self):
         """Pretty Formatting of the recipe"""
         ingredient_string = '\n\n'.join(["{}\n{}".format(k.upper(), '  '+'\n  '.join(v))
-                                       if k != 'main'
-                                       else '\n'.join(v)
-                                       for k, v in self.ingredient_dict.items()])+'\n'
+                                         if k != 'main'
+                                         else '\n'.join(v)
+                                         for k, v in self.ingredient_dict.items()])+'\n'
         strings = [
             "Name".upper(),
             "----",
@@ -170,7 +170,7 @@ class NYTimesCooking:
             "{}\n".format(self.description),
             "Ingredients".upper(),
             "-----------",
-            #"\n".join(self.ingredients_full) + "\n",
+            # "\n".join(self.ingredients_full) + "\n",
             ingredient_string,
             "Directions".upper(),
             "----------",
