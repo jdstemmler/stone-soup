@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from bs4 import BeautifulSoup
+from collections import OrderedDict
 
 
 class NYTimesCooking:
@@ -45,7 +46,7 @@ class NYTimesCooking:
         try:
             time_yield = [ty.text.strip()
                           for ty in self.soup.find('ul', {'class': 'recipe-time-yield'})
-                              .findAll('li')]
+                          .findAll('li')]
         except AttributeError:
             time_yield = []
 
@@ -53,26 +54,48 @@ class NYTimesCooking:
 
     def _get_ingredients(self):
         """Get the ingredients"""
-        try:
-            ingredients_full = [n.text.strip().replace('\n', ' ')
-                                for n in self.soup.find('ul', {'class': 'recipe-ingredients'})
-                                    .findAll('li')]
-            ingredients_name = [n.text
-                                for n in self.soup.find('ul', {'class': 'recipe-ingredients'})
-                                    .findAll('span', {'itemprop': 'name'})]
-        except AttributeError:
-            ingredients_full = []
-            ingredients_name = []
 
-        self.ingredients_full = ingredients_full
-        self.ingredients_name = ingredients_name
+        ingredient_wrap = self.soup.find('section', {'class': 'recipe-ingredients-wrap'})
+
+        try:
+            headers = [t.text for t in ingredient_wrap.findAll('h4', {'class': 'part-name'})]
+        except AttributeError:
+            headers = []
+
+        if not len(headers):
+            headers = ['main']
+
+        try:
+            full = [[t.text.strip().replace('\n', ' ')
+                     for t in l.findAll('li', {'itemprop': 'recipeIngredient'})
+                     ]
+                    for l in ingredient_wrap.findAll('ul', {'class': 'recipe-ingredients'})
+                    ][:len(headers)]
+
+            name = [[t.text.strip().replace('\n', ' ')
+                     for t in l.findAll('span', {'itemprop': 'name'})
+                     ]
+                    for l in ingredient_wrap.findAll('ul', {'class': 'recipe-ingredients'})
+                    ][:len(headers)]
+
+        except AttributeError:
+            full = []
+            name = []
+            # headers = []
+
+        self.ingredient_headers = headers
+        self.ingredients_full = full
+        self.ingredients_name = name
+        self.ingredient_dict = OrderedDict()
+        for h, i in zip(headers, full):
+            self.ingredient_dict[h] = i
 
     def _get_instructions(self):
         """Get the recipe instructions"""
         try:
             directions = [l.text
                           for l in self.soup.find('ol', {'class': 'recipe-steps'})
-                              .findAll('li')]
+                          .findAll('li')]
         except AttributeError:
             directions = []
 
@@ -92,7 +115,7 @@ class NYTimesCooking:
         try:
             notes = [l.text.strip()
                      for l in self.soup.find('ul', {'class': 'recipe-notes'})
-                         .findAll('li')]
+                     .findAll('li')]
         except AttributeError:
             notes = []
 
@@ -103,7 +126,7 @@ class NYTimesCooking:
         try:
             categories = [a.text
                           for a in self.soup.find('p', {'class': 'special-diets tag-block'})
-                              .findAll('a')]
+                          .findAll('a')]
         except AttributeError:
             categories = []
 
@@ -131,6 +154,10 @@ class NYTimesCooking:
 
     def __repr__(self):
         """Pretty Formatting of the recipe"""
+        ingredient_string = '\n\n'.join(["{}\n{}".format(k.upper(), '  '+'\n  '.join(v))
+                                       if k != 'main'
+                                       else '\n'.join(v)
+                                       for k, v in self.ingredient_dict.items()])+'\n'
         strings = [
             "Name".upper(),
             "----",
@@ -143,19 +170,22 @@ class NYTimesCooking:
             "{}\n".format(self.description),
             "Ingredients".upper(),
             "-----------",
-            "\n".join(self.ingredients_full)+"\n",
+            #"\n".join(self.ingredients_full) + "\n",
+            ingredient_string,
             "Directions".upper(),
             "----------",
-            "\n\n".join(self.directions)+"\n",
+            "\n\n".join(self.directions) + "\n",
             "Notes".upper(),
             "-----",
-            "\n".join(self.notes)
+            "\n".join(self.notes),
+            "Nutrition Information".upper(),
+            "---------------------",
+            "\n  ".join([self.servings] + self.nutrition.split(';'))
         ]
 
         return '\n'.join(strings)
 
 
 class FoodNetwork:
-
     def __init__(self):
         pass
