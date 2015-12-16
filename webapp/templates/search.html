@@ -1,0 +1,12 @@
+{% extends 'base_template.html' %}
+{% block content %}
+<textarea class="form-control" rows="3">MUST USE ingredients</textarea>
+<br>
+<textarea class="form-control" rows="3">CAN USE ingredients</textarea>
+<br>
+<textarea class="form-control" rows="3">DON'T USE ingredients</textarea>
+<br>
+<form name="recipe_search" method="post">
+    <input type="submit" name="SUBMIT">
+</form>
+{% endblock %}
