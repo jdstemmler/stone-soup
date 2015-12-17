@@ -5,16 +5,18 @@ import os
 
 
 def parse_and_insert(recipe, table):
-    html = recipe['content']
 
-    try:
-        parsed_recipe = NYTimesCooking(html).to_dict()
-        parsed_recipe.update({'web_url': recipe['web_url']})
-    except:
-        print("recipe could not be parsed")
+    if 'cooking.nytimes.com' not in recipe['web_url']:
         return 0
 
+    html = recipe['content']
+
+    print(recipe['web_url'])
+    parsed_recipe = NYTimesCooking(html).to_dict()
+    parsed_recipe.update({'web_url': recipe['web_url']})
+
     table.insert_one(parsed_recipe)
+
     return 1
 
 
@@ -27,7 +29,6 @@ def main(i, o):
         success += s
 
     print("FINISHED. Successfully parsed {} of out {} recipes".format(success, ix))
-
 
 
 if __name__ == "__main__":
@@ -45,5 +46,6 @@ if __name__ == "__main__":
     db = client[database]
     itab = db[in_table]
     otab = db[out_table]
+    otab.remove({})
 
     main(itab, otab)
