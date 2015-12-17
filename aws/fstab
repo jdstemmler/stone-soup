@@ -1,0 +1,2 @@
+LABEL=cloudimg-rootfs	/	 ext4	defaults,discard	0 0
+/dev/xvdf	/data	ext4	defaults,nofail,nobootwait	0 2
