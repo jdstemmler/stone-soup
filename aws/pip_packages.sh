@@ -6,3 +6,4 @@ pip install --upgrade numpy scipy
 pip install --upgrade matplotlib
 pip install --upgrade scikit-learn
 pip install --upgrade beautifulsoup4
+pip install --upgrade flask
