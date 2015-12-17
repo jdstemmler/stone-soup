@@ -1,21 +1,12 @@
-# Galvanize Capstone Project
+# Recipe Search and Recommendation
 ## Jayson Stemmler
 
-Welcome to the repository for my capstone project.
-This is mostly a placeholder README until I get working
-a bit more.
+This project is an advanced recipe search and recommendation tool developed
+as a capstone project for the Galvanize Immersive Data Science program.
+The main goals of the project are as follows:
 
-The structure of the repository is as follows:
+* Provide recipe recommendations based off of user input of ingredients
+that they want to use and ingredients that they don't want to use. 
 
-### ./examples
-Contains some Jupyter (iPython) notebooks that demonstrate
-some of the functionality of the individual code pieces
-
-### ./gtools
-Main code tools are contained in here. There are parsers and
-some other utilities for doing the actual work
-
-### ./data
-Contains data or scripts to make data
-
-### ./data-acquisition
+* Allow the user to like or dislike a particular recipe to see more
+or less of those types of recipes
