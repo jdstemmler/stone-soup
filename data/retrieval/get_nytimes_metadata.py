@@ -183,12 +183,13 @@ def main(start_date):
 
     # set some settings
     database = load_setting(project_settings, 'db_name')     # name of mongodb database
+    metadata_tab = load_setting(project_settings, "nyt_metadata_table")
     nyt_api_key = load_setting(api_settings, 'NYT_API_KEY')  # NYTimes API Key
 
     # open the connection to the database, get the table
     client = MongoClient()
     db = client[database]
-    table = db['nyt_recipe_metadata']
+    table = db[metadata_tab]
 
     # paginate through the search results
     # starting at the start date specified at runtime and a 2000 day initial window
