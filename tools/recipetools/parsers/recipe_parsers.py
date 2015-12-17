@@ -147,7 +147,7 @@ class NYTimesCooking:
         """Get the URL for an attached image, if available"""
         try:
             img_url = self.soup.find('div', {'class': 'recipe-intro'}).find('img')['src']
-        except AttributeError:
+        except (AttributeError, TypeError):
             img_url = None
 
         self.img_url = img_url
