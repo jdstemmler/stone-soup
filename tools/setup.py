@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='recipetools',
-	version='0.0.1',
-	packages=find_packages(),
-	author='Jayson Stemmler'
+      version='0.0.1',
+      packages=find_packages(),
+      author='Jayson Stemmler'
 )

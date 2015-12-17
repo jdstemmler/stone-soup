@@ -152,6 +152,19 @@ class NYTimesCooking:
 
         self.img_url = img_url
 
+    def to_dict(self):
+        result = dict()
+
+        result['name'] = self.recipe_name
+        result['author'] = self.recipe_author
+        result['description'] = self.description
+        result['ingredients'] = self.ingredient_dict
+        result['ingredient_names'] = [item for subl in self.ingredients_name for item in subl]
+        result['directions'] = self.directions
+        result['categories'] = self.categories
+
+        return result
+
     def __repr__(self):
         """Pretty Formatting of the recipe"""
         ingredient_string = '\n\n'.join(["{}\n{}".format(k.upper(), '  '+'\n  '.join(v))
