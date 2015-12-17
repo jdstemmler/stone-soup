@@ -1,4 +1,6 @@
 {
   "db_name": "capstone-project",
+  "nyt_recipe_table": "nyt-recipes",
+  "nyt_metadata_table": "nyt-recipe-metadata",
   "nyt_url_file": "nyt_urls.txt"
 }

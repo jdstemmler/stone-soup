@@ -63,6 +63,7 @@ if __name__ == "__main__":
     cap_dir = os.getenv("CAPSTONE_DIR")
     settings_file = os.path.join(cap_dir, 'settings', 'project_settings.json')
     database = load_setting(settings_file, 'db_name')  # name of mongodb database
+    recipe_tab = load_setting(settings_file, 'nyt_recipe_table')
     url_filename = load_setting(settings_file, 'nyt_url_file')
 
     # get a list of the urls to work on
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     # connect to the client and database/collection
     client = MongoClient()
     db = client[database]
-    tab = db['nyt_recipes']
+    tab = db[recipe_tab]
 
     # get all the recipes from the url list
     get_recipes_from_list(urls, tab)
