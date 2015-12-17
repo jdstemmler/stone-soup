@@ -3,7 +3,7 @@
 import os
 from pymongo import MongoClient
 
-from gtools.settings import load_setting
+from recipetools.settings import load_setting
 
 
 def main(fileout):

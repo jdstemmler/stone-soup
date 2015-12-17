@@ -6,7 +6,7 @@ import numpy as np
 import requests
 from pymongo import MongoClient
 
-from gtools.settings import load_setting
+from recipetools.settings import load_setting
 
 
 def get_single_recipe(url, verbose=True):
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     cap_dir = os.getenv("CAPSTONE_DIR")
     settings_file = os.path.join(cap_dir, 'settings', 'project_settings.json')
     database = load_setting(settings_file, 'db_name')  # name of mongodb database
-    recipe_tab = load_setting(settings_file, 'nyt_recipe_table')
+    recipe_tab = load_setting(settings_file, 'nyt_recipe_html')
     url_filename = load_setting(settings_file, 'nyt_url_file')
 
     # get a list of the urls to work on

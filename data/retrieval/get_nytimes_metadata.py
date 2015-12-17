@@ -9,7 +9,7 @@ import requests
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 
-from gtools.settings import load_setting
+from recipetools.settings import load_setting
 
 
 def format_api_url(api_key):
