@@ -58,7 +58,7 @@ class NYTimesCooking:
         ingredient_wrap = self.soup.find('section', {'class': 'recipe-ingredients-wrap'})
 
         try:
-            headers = [t.text for t in ingredient_wrap.findAll('h4', {'class': 'part-name'})]
+            headers = [t.text.strip().replace('.', '') for t in ingredient_wrap.findAll('h4', {'class': 'part-name'})]
         except AttributeError:
             headers = []
 
