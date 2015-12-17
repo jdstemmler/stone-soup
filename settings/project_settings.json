@@ -1,6 +1,7 @@
 {
   "db_name": "capstone-project",
-  "nyt_recipe_table": "nyt-recipes",
+  "nyt_recipe_html": "nyt-recipe-html",
   "nyt_metadata_table": "nyt-recipe-metadata",
+  "nyt_recipe_extracted": "nyt-recipe-extracted",
   "nyt_url_file": "nyt_urls.txt"
 }
