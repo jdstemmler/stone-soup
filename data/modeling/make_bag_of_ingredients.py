@@ -1,24 +1,24 @@
+#!/usr/bin/env python
+
 from pymongo import MongoClient
 from recipetools.settings import load_setting
+from recipetools.text import tokenizer, join_ingredients
 from sklearn.feature_extraction.text import CountVectorizer
 import os
 import pickle
-
-
-def tokenizer(x):
-    return x.split(';')
 
 
 def iter_table(recipe_table):
     params = {'_id': 0, 'ingredient_names': 1, 'name': 1, 'web_url': 1}
     result = recipe_table.find({}, params)
 
+    # since result is an iterator, I only get one pass at the data. For loop it is!
     ingredients = []
     names = []
     urls = []
 
     for recipe in result:
-        ingredients.append(';'.join(recipe['ingredient_names']))
+        ingredients.append(join_ingredients(recipe))
         names.append(recipe['name'])
         urls.append(recipe['web_url'])
 
