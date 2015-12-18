@@ -32,6 +32,12 @@ if __name__ == '__main__':
     else:
         debug = False
 
+    if '--port' in sys.argv:
+        ix = sys.argv.index('--port') + 1
+        port = int(sys.argv[ix])
+    else:
+        port = 8080
+
     cap_dir = os.getenv("CAPSTONE_DIR")
     pickle_path = os.path.join(cap_dir, 'data', 'pickles')
     ModelData = namedtuple('Model', 'bag, vocab, components')
@@ -47,4 +53,4 @@ if __name__ == '__main__':
 
     model = ModelData(bag=bag, vocab=vocab, components=components)
 
-    app.run(host='0.0.0.0', port=8080, debug=debug)
+    app.run(host='0.0.0.0', port=port, debug=debug)
