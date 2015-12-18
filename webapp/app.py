@@ -18,7 +18,7 @@ def index():
         # results, terms = find_recipe_with_ingredients(query, model)
         results = find_recipe_with_ingredients(query, model)
         # fnd, nfnd = found_not_found(terms)
-        return render_template('search.html', query=query, results=results)  # , found=fnd, not_found=nfnd)
+        return render_template('search.html', query=query, results=list(results))  # , found=fnd, not_found=nfnd)
     elif query is None:
         return render_template('index.html')
 

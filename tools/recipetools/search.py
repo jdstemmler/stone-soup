@@ -35,9 +35,9 @@ def find_recipe_with_ingredients(query, model):
     recipe_sets = {}
     for k, v in ngrams.items():
         recipe_sets[k] = set()
-        print(v)
+        # print(v)
         for i, ix in v:
-            recipe_sets[k].add(list(model.bag[:, ix].nonzero()[0]))
+            recipe_sets[k] = recipe_sets[k].union(set(model.bag[:, ix].nonzero()[0]))
 
     # term_dict = find_matches(terms, model.vocab)
     # matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]

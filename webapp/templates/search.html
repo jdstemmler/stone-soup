@@ -2,11 +2,11 @@
 {% block content %}
 <div class="starter-template">
     <div class="col-lg-12">
-        <h3>You searched for: "{{ query }}"</h3> <br>
-        <h4>Of that, we found {{ found | join(', ') }}</h4>
+        <h3>Your search for: "{{ query }}" returned {{ results | length }} results</h3> <br>
+        {#<h4>Of that, we found {{ found | join(', ') }}</h4>
         {% if not_found|length > 0 %}
             <h4>But we didn't find {{ not_found | join(', ') }}</h4>
-        {% endif %}
+        {% endif %}#}
     </div>
     <div class="col-lg-3"></div>
     <div class="col-lg-6">
