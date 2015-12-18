@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 from collections import namedtuple
+import sys
 import os
 import pickle
 
@@ -26,6 +27,11 @@ def about():
 
 if __name__ == '__main__':
 
+    if '--debug' in sys.argv:
+        debug = True
+    else:
+        debug = False
+
     cap_dir = os.getenv("CAPSTONE_DIR")
     pickle_path = os.path.join(cap_dir, 'data', 'pickles')
     ModelData = namedtuple('Model', 'bag, vocab, components')
@@ -41,4 +47,4 @@ if __name__ == '__main__':
 
     model = ModelData(bag=bag, vocab=vocab, components=components)
 
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=debug)
