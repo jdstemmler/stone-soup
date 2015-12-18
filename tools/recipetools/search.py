@@ -26,12 +26,24 @@ def found_not_found(terms):
 def find_recipe_with_ingredients(query, model):
 
     terms = split_query(query)
+    ngrams = {}
+    for term in terms:
+        ngrams[term] = [(r[0], model.vocab.get(r[0], None))
+                        for r in model.ng.search(term)
+                        if term in r[0]]
 
-    term_dict = find_matches(terms, model.vocab)
-    matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]
-    match = np.array(list(set.intersection(*matches)), dtype=int)
+    recipe_sets = {}
+    for k, v in ngrams.items():
+        recipe_sets[k] = set()
+        print(v)
+        for i, ix in v:
+            recipe_sets[k].add(list(model.bag[:, ix].nonzero()[0]))
+
+    # term_dict = find_matches(terms, model.vocab)
+    # matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]
+    match = np.array(list(set.intersection(*recipe_sets.values())), dtype=int)
 
     name_url = zip(np.array(model.components['names'])[match],
                    np.array(model.components['urls'])[match])
 
-    return name_url, term_dict
+    return name_url  # , term_dict
