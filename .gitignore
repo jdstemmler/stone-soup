@@ -60,3 +60,4 @@ target/
 .ipynb_checkpoints/
 api_settings.json
 *.data
+*.pkl
