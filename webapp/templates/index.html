@@ -1,4 +1,18 @@
 {% extends 'base_template.html' %}
 {% block content %}
-
+<div class="starter-template">
+    <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+            <h2>Search for an ingredient!</h2>
+            <form action="{{ url_for('index') }}" method="post">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for..." name="ingredients">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Go!</button>
+                    </span>
+                </div><!-- /input-group -->
+            </form>
+        </div><!-- /.col-lg-6 -->
+    <div class="col-lg-2"></div>
+</div>
 {% endblock %}
