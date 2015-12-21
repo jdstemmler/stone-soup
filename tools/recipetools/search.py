@@ -39,11 +39,18 @@ def find_recipe_with_ingredients(query, categories, model):
         for i, ix in v:
             recipe_sets[k] = recipe_sets[k].union(set(model.ingredient_CV[:, ix].nonzero()[0]))
 
+    if len(categories) > 0:
+        for cat in categories:
+            ix = model.category_vocab.get(cat, None)
+            if ix is not None:
+                recipe_sets[cat] = set(model.category_CV[:, ix].nonzero()[0])
+
     # term_dict = find_matches(terms, model.vocab)
     # matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]
     match = np.array(list(set.intersection(*recipe_sets.values())), dtype=int)
 
     name_url = zip(np.array(model.components['names'])[match],
-                   np.array(model.components['urls'])[match])
+                   np.array(model.components['urls'])[match],
+                   np.array(model.components['categories'])[match])
 
     return name_url  # , term_dict

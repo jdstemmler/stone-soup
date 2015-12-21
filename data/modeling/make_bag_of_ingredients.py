@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from collections import defaultdict
 from ngram import NGram
 from recipetools.settings import load_setting
-from recipetools.text import tokenizer, join_ingredients
+from recipetools.text import tokenizer, join_ingredients, join_list
 
 from sklearn.feature_extraction.text import CountVectorizer
 import os
@@ -22,7 +22,7 @@ def iter_table(recipe_table):
     for recipe in result:
         for k, v in recipe.items():
             if k in ("ingredient_names", "categories"):
-                output[k].append(join_ingredients(recipe))
+                output[k].append(join_list(v))
             else:
                 output[k].append(v)
 
@@ -39,13 +39,6 @@ def make_bag_of_ingredients(ingredients):
     vocab = cv.vocabulary_
 
     return wc, vocab
-
-
-# def make_bag_of_categories(categories):
-#     cv = CountVectorizer(tokenizer=lambda x: x)
-#     wc = cv.fit_transform(categories)
-#     vocab = cv.vocabulary_
-#     return wc, vocab
 
 
 def pickler(obj, pkl):
