@@ -23,13 +23,13 @@ def found_not_found(terms):
     return found, not_found
 
 
-def find_recipe_with_ingredients(query, model):
+def find_recipe_with_ingredients(query, categories, model):
 
     terms = split_query(query)
     ngrams = {}
     for term in terms:
-        ngrams[term] = [(r[0], model.vocab.get(r[0], None))
-                        for r in model.ng.search(term)
+        ngrams[term] = [(r[0], model.ingredient_vocab.get(r[0], None))
+                        for r in model.ingredient_ngram.search(term)
                         if term in r[0]]
 
     recipe_sets = {}
@@ -37,7 +37,7 @@ def find_recipe_with_ingredients(query, model):
         recipe_sets[k] = set()
         # print(v)
         for i, ix in v:
-            recipe_sets[k] = recipe_sets[k].union(set(model.bag[:, ix].nonzero()[0]))
+            recipe_sets[k] = recipe_sets[k].union(set(model.ingredient_CV[:, ix].nonzero()[0]))
 
     # term_dict = find_matches(terms, model.vocab)
     # matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]

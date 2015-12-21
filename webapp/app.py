@@ -13,12 +13,16 @@ app = Flask(__name__)
 @app.route('/', methods=['POST', 'GET'])
 def index():
     query = request.form.get('ingredients', None)
+    if query is not None and len(query) == 0:
+        query = None
+
+    categories = request.form.getlist('category')
 
     if query is not None:
         # results, terms = find_recipe_with_ingredients(query, model)
-        results = find_recipe_with_ingredients(query, model)
+        results = find_recipe_with_ingredients(query, categories, model)
         # fnd, nfnd = found_not_found(terms)
-        return render_template('search.html', query=query, results=list(results))  # , found=fnd, not_found=nfnd)
+        return render_template('search.html', query=query, results=list(results), form=categories)  # , found=fnd, not_found=nfnd)
     elif query is None:
         return render_template('index.html')
 
@@ -42,19 +46,21 @@ if __name__ == '__main__':
 
     cap_dir = os.getenv("CAPSTONE_DIR")
     pickle_path = os.path.join(cap_dir, 'data', 'pickles')
-    ModelData = namedtuple('Model', 'bag, vocab, components, ng')
 
-    with open(os.path.join(pickle_path, 'bag_of_ingredients.pkl'), 'rb') as f:
-        bag = pickle.load(f)
+    # with open(os.path.join(pickle_path, 'bag_of_ingredients.pkl'), 'rb') as f:
+    #    bag = pickle.load(f)
 
-    with open(os.path.join(pickle_path, 'vocabulary.pkl'), 'rb') as f:
-        vocab = pickle.load(f)
+    # with open(os.path.join(pickle_path, 'vocabulary.pkl'), 'rb') as f:
+    #     vocab = pickle.load(f)
+    #
+    # with open(os.path.join(pickle_path, 'recipe_components.pkl'), 'rb') as f:
+    #     components = pickle.load(f)
 
-    with open(os.path.join(pickle_path, 'recipe_components.pkl'), 'rb') as f:
-        components = pickle.load(f)
+    with open(os.path.join(pickle_path, 'model.pkl'), 'rb') as f:
+        model_dict = pickle.load(f)
 
-    ng = ngram.NGram(vocab.keys())
+    ModelData = namedtuple('Model', model_dict.keys())
 
-    model = ModelData(bag=bag, vocab=vocab, components=components, ng=ng)
+    model = ModelData(**model_dict)
 
     app.run(host='0.0.0.0', port=port, debug=debug)
