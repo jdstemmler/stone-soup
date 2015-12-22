@@ -10,7 +10,7 @@ from recipetools.search import find_recipe_with_ingredients, found_not_found
 app = Flask(__name__)
 app.debug = True
 
-cap_dir = os.getenv("CAPSTONE_DIR")
+cap_dir = os.getenv("CAPSTONE_DIR", '/home/ubuntu/gschool-capstone')
 pickle_path = os.path.join(cap_dir, 'data', 'pickles')
 
 with open(os.path.join(pickle_path, 'model.pkl'), 'rb') as f:
