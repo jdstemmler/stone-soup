@@ -8,7 +8,7 @@ import ngram
 from recipetools.search import find_recipe_with_ingredients, found_not_found
 
 app = Flask(__name__)
-
+app.debug = True
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
