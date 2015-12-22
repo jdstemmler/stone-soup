@@ -10,6 +10,17 @@ from recipetools.search import find_recipe_with_ingredients, found_not_found
 app = Flask(__name__)
 app.debug = True
 
+cap_dir = os.getenv("CAPSTONE_DIR")
+pickle_path = os.path.join(cap_dir, 'data', 'pickles')
+
+with open(os.path.join(pickle_path, 'model.pkl'), 'rb') as f:
+    model_dict = pickle.load(f)
+
+ModelData = namedtuple('Model', model_dict.keys())
+
+model = ModelData(**model_dict)
+
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
     query = request.form.get('ingredients', None)
@@ -43,24 +54,5 @@ if __name__ == '__main__':
         port = int(sys.argv[ix])
     else:
         port = 8080
-
-    cap_dir = os.getenv("CAPSTONE_DIR")
-    pickle_path = os.path.join(cap_dir, 'data', 'pickles')
-
-    # with open(os.path.join(pickle_path, 'bag_of_ingredients.pkl'), 'rb') as f:
-    #    bag = pickle.load(f)
-
-    # with open(os.path.join(pickle_path, 'vocabulary.pkl'), 'rb') as f:
-    #     vocab = pickle.load(f)
-    #
-    # with open(os.path.join(pickle_path, 'recipe_components.pkl'), 'rb') as f:
-    #     components = pickle.load(f)
-
-    with open(os.path.join(pickle_path, 'model.pkl'), 'rb') as f:
-        model_dict = pickle.load(f)
-
-    ModelData = namedtuple('Model', model_dict.keys())
-
-    model = ModelData(**model_dict)
 
     app.run(host='0.0.0.0', port=port, debug=debug)
