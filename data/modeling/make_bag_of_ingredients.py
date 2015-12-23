@@ -4,16 +4,17 @@ from pymongo import MongoClient
 from collections import defaultdict
 from ngram import NGram
 from recipetools.settings import load_setting
-from recipetools.text import tokenizer, join_ingredients, join_list
+from recipetools.text import ingredient_tokenizer, direction_tokenizer, join_list
 
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import os
 import pickle
 
 
 def iter_table(recipe_table):
     params = {'_id': 0, 'ingredient_names': 1, 'name': 1,
-              'web_url': 1, 'categories': 1, 'directions': 1}
+              'web_url': 1, 'categories': 1, 'directions': 1,
+              'img_url': 1}
     result = recipe_table.find({}, params)
 
     # since result is an iterator, I only get one pass at the data. For loop it is!
@@ -34,11 +35,19 @@ def iter_table(recipe_table):
 
 
 def make_bag_of_ingredients(ingredients):
-    cv = CountVectorizer(tokenizer=tokenizer)
+    cv = CountVectorizer(tokenizer=ingredient_tokenizer)
     wc = cv.fit_transform(ingredients)
     vocab = cv.vocabulary_
 
     return wc, vocab
+
+
+def vectorize_directions(directions):
+    tf = TfidfVectorizer(stop_words='english', ngram_range=(2, 3))
+    tf_idf = tf.fit_transform([' '.join(x) for x in directions])
+    vocab = tf.get_feature_names()
+
+    return tf_idf, vocab
 
 
 def pickler(obj, pkl):
@@ -50,20 +59,23 @@ def main(recipe_table):
     components = iter_table(recipe_table)
     wc, vocab = make_bag_of_ingredients(components['ingredients'])
     comp, compv = make_bag_of_ingredients(components['categories'])
+    tfidf, direction_vocab = vectorize_directions(components['directions'])
 
     ng = NGram(vocab.keys())
 
     #  model_parts = 'ingredient_CV, ingredient_vocab, category_CV, category_vocab, components'
 
-    model = {'ingredient_CV': wc,
-             'ingredient_vocab': vocab,
-             'ingredient_ngram': ng,
-             'category_CV': comp,
-             'category_vocab': compv,
-             'components': components
-             }
+    features = {'ingredient_CV': wc,
+                'ingredient_vocab': vocab,
+                'ingredient_ngram': ng,
+                'category_CV': comp,
+                'category_vocab': compv,
+                'components': components,
+                'directions_tfidf': tfidf,
+                'directions_vocab': direction_vocab
+                }
 
-    pickler(model, model_pickle)
+    pickler(features, feature_pickle)
 
     # pickler(wc, bag_pickle)
     # pickler(vocab, vocab_pickle)
@@ -89,6 +101,6 @@ if __name__ == "__main__":
     # bag_pickle = os.path.join(cap_dir, 'data/pickles/bag_of_ingredients.pkl')
     # vocab_pickle = os.path.join(cap_dir, 'data/pickles/vocabulary.pkl')
     # comp_pickle = os.path.join(cap_dir, 'data/pickles/recipe_components.pkl')
-    model_pickle = os.path.join(cap_dir, 'data/pickles/model.pkl')
+    feature_pickle = os.path.join(cap_dir, 'data/pickles/features.pkl')
 
     main(tab)

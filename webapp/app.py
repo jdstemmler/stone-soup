@@ -1,9 +1,8 @@
 from flask import Flask, request, render_template
-from collections import namedtuple
+
 import sys
 import os
 import pickle
-import ngram
 
 from recipetools.search import find_recipe_with_ingredients, found_not_found
 
@@ -13,12 +12,11 @@ app.debug = True
 cap_dir = os.getenv("CAPSTONE_DIR", '/home/ubuntu/gschool-capstone')
 pickle_path = os.path.join(cap_dir, 'data', 'pickles')
 
-with open(os.path.join(pickle_path, 'model.pkl'), 'rb') as f:
-    model_dict = pickle.load(f)
+with open(os.path.join(pickle_path, 'features.pkl'), 'rb') as f:
+    features= pickle.load(f)
 
-ModelData = namedtuple('Model', model_dict.keys())
-
-model = ModelData(**model_dict)
+with open(os.path.join(pickle_path, 'topics.pkl'), 'rb') as f:
+    topics = pickle.load(f)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -30,10 +28,8 @@ def index():
     categories = request.form.getlist('category')
 
     if query is not None:
-        # results, terms = find_recipe_with_ingredients(query, model)
-        results = find_recipe_with_ingredients(query, categories, model)
-        # fnd, nfnd = found_not_found(terms)
-        return render_template('search.html', query=query, results=list(results), form=categories)  # , found=fnd, not_found=nfnd)
+        results = find_recipe_with_ingredients(query, categories, features, topics)
+        return render_template('search.html', query=query, results=list(results), form=categories)
     elif query is None:
         return render_template('index.html')
 

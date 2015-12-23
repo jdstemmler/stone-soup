@@ -67,6 +67,7 @@ class BaseParser:
         result['ingredient_names'] = [item for subl in self.ingredients_name for item in subl]
         result['directions'] = self.directions
         result['categories'] = self.categories
+        result['img_url'] = self.img_url
 
         return result
 

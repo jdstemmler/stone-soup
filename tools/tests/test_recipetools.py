@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from collections import namedtuple
 
 from recipetools.search import split_query, find_recipe_with_ingredients, found_not_found
-from recipetools.text import tokenizer, join_ingredients
+from recipetools.text import ingredient_tokenizer, join_ingredients
 from recipetools.parsers import NYTimesCooking
 
 
@@ -35,9 +35,9 @@ class SearchTest(unittest.TestCase):
         self.query = 'Bacon, eggs'
 
         self.joined_ingredients = [join_ingredients(x) for x in self.recipes]
-        self.tokenized_ingredients = [tokenizer(x) for x in self.joined_ingredients]
+        self.tokenized_ingredients = [ingredient_tokenizer(x) for x in self.joined_ingredients]
 
-        cv = CountVectorizer(tokenizer=tokenizer)
+        cv = CountVectorizer(tokenizer=ingredient_tokenizer)
         wc = cv.fit_transform(self.joined_ingredients)
 
         self.wc = wc
