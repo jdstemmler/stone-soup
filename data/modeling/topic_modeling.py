@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+
 import os
 import pickle
 from sklearn.decomposition import NMF
 
 
 def model_topics(directions):
-    nmf = NMF(max_iter=300, n_components=20, verbose=0)
+    nmf = NMF(max_iter=300, n_components=30, verbose=0)
     nmf.fit(directions)
     W, H = nmf.transform(directions), nmf.components_
 

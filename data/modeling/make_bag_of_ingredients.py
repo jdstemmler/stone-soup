@@ -48,7 +48,7 @@ def make_bag_of_ingredients(ingredients):
 
 
 def vectorize_directions(directions):
-    tf = TfidfVectorizer(stop_words='english', ngram_range=(2, 3))
+    tf = TfidfVectorizer(max_features=100000, stop_words='english', ngram_range=(2, 3))
     tf_idf = tf.fit_transform([' '.join(x) for x in directions])
     vocab = tf.get_feature_names()
 
