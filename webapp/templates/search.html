@@ -10,9 +10,11 @@
     </div>
     <div>
         {% for item in results %}
-        <div class="col-md-3">
-            <a href="{{ item[1] }}"><img src="{{ item[3] }}" height="150px" ></a>
+        <a href="{{ item[1] }}">
+        <div class="col-sm-3" style="height: 160px; line-height: 160px; background-color: #014061; border: 1px solid white">
+            <span style="display: inline-block; vertical-align: middle; line-height: 16px;">{{ item[0] }}</span>
         </div>
+            </a>
         {% endfor %}
     </div>
     
