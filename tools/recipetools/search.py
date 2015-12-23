@@ -30,7 +30,7 @@ def find_recipe_with_ingredients(query, categories, features, topics):
     for term in terms:
         ngrams[term] = [(r[0], features['ingredient_vocab'].get(r[0], None))
                         for r in features['ingredient_ngram'].search(term)
-                        if term in r[0]]
+                        if term in r[0] and ('broth' not in r[0] and 'stock' not in r[0])]
 
     recipe_sets = {}
     for k, v in ngrams.items():
@@ -49,13 +49,24 @@ def find_recipe_with_ingredients(query, categories, features, topics):
     # matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]
     match = np.array(list(set.intersection(*recipe_sets.values())), dtype=int)
 
-    recipe_topics = topics['W'][match, :]
-    km = KMeans(n_clusters=4)
-    km.fit(recipe_topics)
-    distances = km.transform(recipe_topics)
-    sorted_recipes_per_topic = np.argsort(distances, axis=0)[:3, :].ravel()
+    if len(match) <= 12:
+        final_match = match
+    else:
+        recipe_topics = topics['W'][match, :]
+        km = KMeans(n_clusters=4)
+        km.fit(recipe_topics)
+        distances = km.transform(recipe_topics)
+        sorted_recipes_per_topic = np.argsort(distances, axis=0).ravel()
+        final_set = set()
+        ix = 0
 
-    final_match = np.array(list(set(match[sorted_recipes_per_topic])))
+        while len(final_set) < 12:
+            final_set.add(match[sorted_recipes_per_topic[ix]])
+            ix += 1
+            if ix > 40:
+                break
+
+        final_match = np.array(list(final_set))
 
     out_array = zip(np.array(features['components']['names'])[final_match],
                     np.array(features['components']['urls'])[final_match],

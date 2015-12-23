@@ -24,6 +24,11 @@ def iter_table(recipe_table):
         for k, v in recipe.items():
             if k in ("ingredient_names", "categories"):
                 output[k].append(join_list(v))
+            elif k in ('img_url'):
+                if v is not None:
+                    output[k].append(v)
+                else:
+                    output[k].append('/static/images/nytimes.jpg')
             else:
                 output[k].append(v)
 
