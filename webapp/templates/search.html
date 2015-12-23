@@ -13,10 +13,10 @@
         {% for item in results %}
         <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3" style="height: 230px;">
         <a href="{{ item[1] }}" target="_blank">
-        <div style="height: 130px; padding: 0px; background: url({{ item[3] }}) no-repeat center; background-size:100%; background-color: #3A5461;">
+        <div class="recipe-card" style="background: url({{ item[3] }}) no-repeat center;">
             </div>
-            <div style="height: 70px; background-color: #3A5461; line-height: 70px; width: 100%; text-align: center">
-                <span style="display: inline-block; vertical-align: middle; line-height: normal;  font-variant: small-caps; padding-left: 10px; padding-right: 10px">{{ item[0] }}</span></div>
+            <div class="recipe-name">
+                <span class="recipe-link">{{ item[0] }}</span></div>
             </a>
             </div>
         {% endfor %}
