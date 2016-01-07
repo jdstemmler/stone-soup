@@ -2,7 +2,7 @@
 {% block content %}
 <div class="starter-template">
     <div class="col-lg-12">
-        <h3>Your search for "{{ query }}" returned {{ results | length }} 
+        <h3>Your search for "{{ query }}" returned {{ results | length }}
             {{ form | join(', ') }} results</h3> <br>
         {#<h4>Of that, we found {{ found | join(', ') }}</h4>
         {% if not_found|length > 0 %}
@@ -21,7 +21,7 @@
             </div>
         {% endfor %}
     </div>
-    
+
 
 </div>
 {% endblock %}
