@@ -61,3 +61,4 @@ target/
 api_settings.json
 *.data
 *.pkl
+other_vhosts_*
