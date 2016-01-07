@@ -24,7 +24,7 @@ def iter_table(recipe_table):
         for k, v in recipe.items():
             if k in ("ingredient_names", "categories"):
                 output[k].append(join_list(v))
-            elif k in ('img_url'):
+            elif k in ('img_url',):
                 if v is not None:
                     output[k].append(v)
                 else:
@@ -48,7 +48,16 @@ def make_bag_of_ingredients(ingredients):
 
 
 def vectorize_directions(directions):
-    tf = TfidfVectorizer(max_features=100000, stop_words='english', ngram_range=(2, 3))
+    default_stop_words = TfidfVectorizer(stop_words='english').get_stop_words()
+    custom_stops = {'cook', 'stirring', 'add', 'heat', 'low', 'medium', 'high', 'saucepan',
+                    'boil', 'stir', 'set', 'aside', 'cool', 'reduce', 'degrees',
+                    'minutes', 'sauce', 'pot', 'pan', 'place', 'oven', 'oil', 'cover', 'water',
+                    'salt', 'pepper', 'bring', 'simmer', 'drain', 'combine', 'ingredients', 'mixing', 'bowl',
+                    'serve', 'immediately', 'olive', 'large', 'heavy', 'skillet', 'nonstick', 'plates',
+                    'chicken', }
+    stop_words = custom_stops.union(default_stop_words)
+    tf = TfidfVectorizer(max_features=100000, stop_words=list(stop_words),
+                         ngram_range=(2, 3), analyzer='word')
     tf_idf = tf.fit_transform([' '.join(x) for x in directions])
     vocab = tf.get_feature_names()
 
