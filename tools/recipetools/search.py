@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
+
 def split_query(query):
     """Split the query into its component parts"""
     terms = query.lower().split(',')
@@ -23,16 +24,18 @@ def found_not_found(terms):
     return found, not_found
 
 
-def find_recipe_with_ingredients(query, categories, features, topics):
-
-    terms = split_query(query)
+def gen_ngrams(features, terms):
     ngrams = {}
     for term in terms:
         ngrams[term] = [(r[0], features['ingredient_vocab'].get(r[0], None))
                         for r in features['ingredient_ngram'].search(term)
                         if term in r[0] and ('broth' not in r[0] and 'stock' not in r[0])]
+    return ngrams
 
+
+def gen_recipe_sets(features, categories, ngrams):
     recipe_sets = {}
+
     for k, v in ngrams.items():
         recipe_sets[k] = set()
         # print(v)
@@ -45,28 +48,54 @@ def find_recipe_with_ingredients(query, categories, features, topics):
             if ix is not None:
                 recipe_sets[cat] = set(features['category_CV'][:, ix].nonzero()[0])
 
+    return recipe_sets
+
+
+def find_initial_matches(recipe_sets):
+    match = np.array(list(set.intersection(*recipe_sets.values())), dtype=int)
+    return match
+
+
+def compute_clusters(topics, match):
+    recipe_topics = topics['W'][match, :]
+    km = KMeans(n_clusters=4)
+    km.fit(recipe_topics)
+    distances = km.transform(recipe_topics)
+    sorted_recipes_per_topic = np.argsort(distances, axis=0).ravel()
+
+    return sorted_recipes_per_topic
+
+
+def find_final_matches(match, sorted_recipes_per_topic):
+    final_set = set()
+    ix = 0
+
+    while len(final_set) < 12:
+        final_set.add(match[sorted_recipes_per_topic[ix]])
+        ix += 1
+        if ix > 40:
+            break
+
+    final_match = np.array(list(final_set))
+    return final_match
+
+
+def find_recipe_with_ingredients(query, categories, features, topics):
+
+    terms = split_query(query)
+    ngrams = gen_ngrams(features, terms)
+
+    recipe_sets = gen_recipe_sets(features, categories, ngrams)
+
     # term_dict = find_matches(terms, model.vocab)
     # matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]
-    match = np.array(list(set.intersection(*recipe_sets.values())), dtype=int)
+    match = find_initial_matches(recipe_sets)
 
     if len(match) <= 12:
         final_match = match
     else:
-        recipe_topics = topics['W'][match, :]
-        km = KMeans(n_clusters=4)
-        km.fit(recipe_topics)
-        distances = km.transform(recipe_topics)
-        sorted_recipes_per_topic = np.argsort(distances, axis=0).ravel()
-        final_set = set()
-        ix = 0
-
-        while len(final_set) < 12:
-            final_set.add(match[sorted_recipes_per_topic[ix]])
-            ix += 1
-            if ix > 40:
-                break
-
-        final_match = np.array(list(final_set))
+        sorted_recipes_per_topic = compute_clusters(topics, match)
+        final_match = find_final_matches(match, sorted_recipes_per_topic)
 
     out_array = zip(np.array(features['components']['names'])[final_match],
                     np.array(features['components']['urls'])[final_match],
