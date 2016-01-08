@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_from_directory
 
 import sys
 import os
@@ -40,6 +40,18 @@ with open(os.path.join(pickle_path, 'topics.pkl'), 'rb') as f:
 client = MongoClient()
 db = client[database]
 tab = db['feedback']
+
+
+@app.route('/deck')
+def deck():
+    return send_from_directory(os.path.join(cap_dir, 'webapp', 'presentation', 'StoneSoup'), 'index.html')
+
+
+@app.route('/assets/<path:filename>')
+def player(filename):
+    head, tail = os.path.split(filename)
+    fullpath = os.path.join(cap_dir, 'webapp/presentation/StoneSoup/assets', head)
+    return send_from_directory(fullpath, tail)
 
 
 @app.route('/', methods=['POST', 'GET'])
