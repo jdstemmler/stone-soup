@@ -56,7 +56,7 @@ def vectorize_directions(directions):
                     'serve', 'immediately', 'olive', 'large', 'heavy', 'skillet', 'nonstick', 'plates',
                     'chicken', }
     stop_words = custom_stops.union(default_stop_words)
-    tf = TfidfVectorizer(max_features=100000, stop_words=list(stop_words),
+    tf = TfidfVectorizer(max_features=500000, stop_words=list(stop_words),
                          ngram_range=(2, 3), analyzer='word')
     tf_idf = tf.fit_transform([' '.join(x) for x in directions])
     vocab = tf.get_feature_names()
