@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AffinityPropagation
 
 
 def split_query(query):
@@ -58,12 +58,12 @@ def find_initial_matches(recipe_sets):
 
 def compute_clusters(topics, match):
     recipe_topics = topics['W'][match, :]
-    km = KMeans(n_clusters=4)
-    km.fit(recipe_topics)
-    distances = km.transform(recipe_topics)
-    sorted_recipes_per_topic = np.argsort(distances, axis=0).ravel()
+    cluster = KMeans(n_clusters=4)
+    # cluster = AffinityPropagation()
+    cluster.fit(recipe_topics)
+    distances = cluster.transform(recipe_topics)
 
-    return sorted_recipes_per_topic
+    return cluster, distances
 
 
 def find_final_matches(match, sorted_recipes_per_topic):
@@ -94,7 +94,9 @@ def find_recipe_with_ingredients(query, categories, features, topics):
     if len(match) <= 12:
         final_match = match
     else:
-        sorted_recipes_per_topic = compute_clusters(topics, match)
+        cluster, distances = compute_clusters(topics, match)
+        sorted_recipes_per_topic = np.argsort(distances, axis=0).ravel()
+
         final_match = find_final_matches(match, sorted_recipes_per_topic)
 
     out_array = zip(np.array(features['components']['names'])[final_match],
