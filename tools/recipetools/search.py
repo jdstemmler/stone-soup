@@ -51,9 +51,18 @@ def gen_recipe_sets(features, categories, ngrams):
     return recipe_sets
 
 
-def find_initial_matches(recipe_sets):
+def find_initial_matches(recipe_sets, features, with_pictures=False):
+
     match = np.array(list(set.intersection(*recipe_sets.values())), dtype=int)
-    return match
+
+    if with_pictures:
+        has_img = np.array([False if '/static/' in img else True
+                            for img in features['components']['img_url']]).nonzero()[0]
+
+        return np.array(list(set.intersection(set(has_img), match)), dtype=int)
+
+    else:
+        return match
 
 
 def compute_clusters(topics, match):
@@ -89,7 +98,7 @@ def find_recipe_with_ingredients(query, categories, features, topics):
 
     # term_dict = find_matches(terms, model.vocab)
     # matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]
-    match = find_initial_matches(recipe_sets)
+    match = find_initial_matches(recipe_sets, features, with_pictures=True)
 
     if len(match) <= 12:
         final_match = match
