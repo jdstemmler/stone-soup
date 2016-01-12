@@ -6,7 +6,7 @@ from sklearn.decomposition import NMF
 
 
 def model_topics(directions):
-    nmf = NMF(max_iter=300, n_components=20, verbose=0)
+    nmf = NMF(max_iter=600, n_components=8, verbose=1)
     nmf.fit(directions)
     W, H = nmf.transform(directions), nmf.components_
 
