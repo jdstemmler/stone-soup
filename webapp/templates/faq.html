@@ -1,0 +1,65 @@
+{% extends 'base_template.html' %}
+{% block content %}
+<div class="starter-template">
+    <h1>Frequently Asked Questions</h1>
+</div>
+
+    <div class="col-md-8 col-md-offset-2">
+        <h3>So... what is this?</h3>
+
+    <p>
+        Stone Soup is an ingredient-based recipe search tool. The main point is to give it a small number
+        of ingredients that you want to use up (maybe they're close to expiring) and it will find recipes
+        that contain ALL of the ingredients you put into it.
+        <br><br>
+        So if you have some kale lying around in your fridge, plug it in and get some recipes that have kale!
+        <br><br>
+        If you wanted to get more complicated and see what you could make that would use up your chicken breast,
+        cilantro, and garlic, put them in. You'll get recipes!
+    </p>
+</div>
+    <div class="col-md-8 col-md-offset-2">
+        <h3>How many ingredients can I search for at a time?</h3>
+
+    <p>
+        The sky is the limit! Well actually, the recipe is the limit. The search tool looks for
+        recipes that include every single ingredient in the list you give it. If there aren't
+        any recipes with those combination of ingredients, you won't see any.
+        <br><br>
+        However, one of the features on the to-do list is to show some recipes with different combinations
+        if your initial search turns up very few or no results. This way you can see which ingredient
+        combos work well.
+    </p>
+  </div>
+
+
+    <div class="col-md-8 col-md-offset-2">
+        <h3>Why should I use your site instead of a generic search engine?</h3>
+
+    <p>
+        Several reasons. First is that my search tool looks deep into the actual ingredient list
+        of a particular recipe. A search engine will look primarily at the recipe title, which
+        doesn't really reflect every ingredient in a recipe. If you're looking for a recipe for something
+        like "chicken lasagna" then you should certainly use a search engine. However, if you're looking
+        for recipes that contain the ingredients chicken and tomatoes, you should use my site. A search engine
+        will pretty much only return you results that sound like "Chicken and tomatoes... " whereas my site doesn't
+        care if chicken or tomatoes are in the title and you get some pretty interesting and tasty sounding results.
+        <br><br>
+        Second, data science. When you use a search engine or recipe site to look for recipes, the list of things
+        you get back can sometimes be overwhelming and not terribly relevant (see paragraph above).
+        I use some natural language processing, matrix factorization and dimensionality reduction, as well as topical
+        clustering techniques on the actual recipe instructions to pull out latent
+        topics for the entire corpus of recipes and return a small number of results with a large amount of variety.
+        Furthermore, on the to-do list is to add a user account system to allow you to log in and rate recipes which
+        would then learn from your ratings to provide you with even better recipe results.
+    </p>
+  </div>
+
+ <div class="col-md-8 col-md-offset-2">
+        <h3>You didn't answer my question!!</h3>
+
+    <p>
+        Probably because you didn't ask it. Have a question? Head over to the contact page and leave me
+        a comment. Maybe you'll see your question here the next time you look for a recipe!
+  </div>
+{% endblock %}
