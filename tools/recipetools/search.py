@@ -89,7 +89,7 @@ def find_final_matches(match, sorted_recipes_per_topic):
     return final_match
 
 
-def find_recipe_with_ingredients(query, categories, features, topics):
+def find_recipe_with_ingredients(query, categories, features, topics, pictures=False):
 
     terms = split_query(query)
     ngrams = gen_ngrams(features, terms)
@@ -98,7 +98,7 @@ def find_recipe_with_ingredients(query, categories, features, topics):
 
     # term_dict = find_matches(terms, model.vocab)
     # matches = [set(model.bag[:, v].nonzero()[0]) for k, v in term_dict.items() if k is not None]
-    match = find_initial_matches(recipe_sets, features, with_pictures=True)
+    match = find_initial_matches(recipe_sets, features, with_pictures=pictures)
 
     if len(match) <= 12:
         final_match = match
