@@ -63,7 +63,7 @@ def index():
     categories = request.form.getlist('category')
 
     if query is not None:
-        results = find_recipe_with_ingredients(query, categories, features, topics, pictures=False)
+        results = find_recipe_with_ingredients(query, categories, features, topics, pictures=True)
         return render_template('search.html', query=query, results=list(results), form=categories)
     elif query is None:
         return render_template('index.html')
