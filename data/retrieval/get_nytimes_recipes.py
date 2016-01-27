@@ -25,6 +25,34 @@ def get_single_recipe(url, verbose=True):
         return {'web_url': url, 'content': html.content}  # return the url and content if successful
 
 
+def get_recipes_from_metadata(meta, recipe, verbose=False):
+    metadata = meta.find({}, {'web_url': 1})
+    n_urls = metadata.count()
+
+    for i, record in metadata:
+        url = record['web_url'].strip()
+        if verbose: print('getting {}'.format(url))
+
+        if not recipe.find({'web_url': url}).count():
+            content = get_single_recipe(url, verbose)
+            if content is not None:
+                recipe.insert_one(content)
+            elif content is None:
+                meta.drop_index(record['_id'])
+
+            time.sleep(4. * np.random.random_sample() + 3.)
+        elif recipe.find({'web_url': url}).count():
+            if verbose: print('already have the recipe')
+
+        # status message for output
+        if verbose: print("Processed {} out of {} recipes\n".format(i+1, n_urls))
+
+        # take a longer break every 100 recipes
+        if i % 100 == 0:
+            if verbose: print("Taking a break...\n")
+            time.sleep(60)
+
+
 def get_recipes_from_list(urls, tab, verbose=False):
     """Get all recipes from a list of URLs"""
 
@@ -65,6 +93,7 @@ if __name__ == "__main__":
     settings_file = os.path.join(cap_dir, 'settings', 'project_settings.json')
     database = load_setting(settings_file, 'db_name')  # name of mongodb database
     recipe_tab = load_setting(settings_file, 'nyt_recipe_html')
+    metadata_tab = load_setting(settings_file, 'nyt-recipe-metadata')
     url_filename = load_setting(settings_file, 'nyt_url_file')
 
     # get a list of the urls to work on
@@ -76,12 +105,15 @@ if __name__ == "__main__":
     # connect to the client and database/collection
     client = MongoClient()
     db = client[database]
-    tab = db[recipe_tab]
+    rtab = db[recipe_tab]
+    mtab = db[metadata_tab]
+
+    get_recipes_from_metadata(mtab, rtab, verbose=True)
 
     # get all the recipes from the url list
-    if '--verbose' in sys.argv:
-        get_recipes_from_list(urls, tab, verbose=True)
-    else:
-        get_recipes_from_list(urls, tab)
+    # if '--verbose' in sys.argv:
+    #     get_recipes_from_list(urls, tab, verbose=True)
+    # else:
+    #     get_recipes_from_list(urls, tab)
 
     client.close()
