@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import time
 import numpy as np
 import requests
@@ -78,6 +79,9 @@ if __name__ == "__main__":
     tab = db[recipe_tab]
 
     # get all the recipes from the url list
-    get_recipes_from_list(urls, tab)
+    if '--verbose' in sys.argv:
+        get_recipes_from_list(urls, tab, verbose=True)
+    else:
+        get_recipes_from_list(urls, tab)
 
     client.close()
