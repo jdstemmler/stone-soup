@@ -3,12 +3,16 @@
 import os
 import pickle
 from sklearn.decomposition import NMF
+from sklearn.preprocessing import Normalizer
+from sklearn.pipeline import make_pipeline
 
 
 def model_topics(directions):
     nmf = NMF(max_iter=600, n_components=8, verbose=1)
-    nmf.fit(directions)
-    W, H = nmf.transform(directions), nmf.components_
+    norm = Normalizer(copy=False)
+    pipe = make_pipeline(nmf, norm)
+    # nmf.fit(directions)
+    W, H = pipe.fit_transform(directions), nmf.components_
 
     return W, H
 

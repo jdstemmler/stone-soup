@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.cluster import KMeans, AffinityPropagation
 
 
+
 def split_query(query):
     """Split the query into its component parts"""
     terms = query.lower().split(',')
