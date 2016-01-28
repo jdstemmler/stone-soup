@@ -29,7 +29,8 @@ def get_recipes_from_metadata(meta, recipe, verbose=False):
     metadata = meta.find({}, {'web_url': 1})
     n_urls = metadata.count()
 
-    for i, record in metadata:
+    for i, record in enumerate(metadata):
+        # print(record)
         url = record['web_url'].strip()
         if verbose: print('getting {}'.format(url))
 
@@ -38,7 +39,7 @@ def get_recipes_from_metadata(meta, recipe, verbose=False):
             if content is not None:
                 recipe.insert_one(content)
             elif content is None:
-                meta.drop_index(record['_id'])
+                meta.remove({'_id': record['_id']})
 
             time.sleep(4. * np.random.random_sample() + 3.)
         elif recipe.find({'web_url': url}).count():
@@ -48,9 +49,9 @@ def get_recipes_from_metadata(meta, recipe, verbose=False):
         if verbose: print("Processed {} out of {} recipes\n".format(i+1, n_urls))
 
         # take a longer break every 100 recipes
-        if i % 100 == 0:
-            if verbose: print("Taking a break...\n")
-            time.sleep(60)
+        # if i % 100 == 0:
+        #    if verbose: print("Taking a break...\n")
+        #    time.sleep(60)
 
 
 def get_recipes_from_list(urls, tab, verbose=False):
@@ -93,7 +94,7 @@ if __name__ == "__main__":
     settings_file = os.path.join(cap_dir, 'settings', 'project_settings.json')
     database = load_setting(settings_file, 'db_name')  # name of mongodb database
     recipe_tab = load_setting(settings_file, 'nyt_recipe_html')
-    metadata_tab = load_setting(settings_file, 'nyt-recipe-metadata')
+    metadata_tab = load_setting(settings_file, 'nyt_metadata_table')
     url_filename = load_setting(settings_file, 'nyt_url_file')
 
     # get a list of the urls to work on
